@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모닝컴퍼니 시즌4 멤버즈</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: #fff;
+    color: #242424;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #242424;
+  }
+  .nav-logo span { color: #1a8917; }
+  .nav-right {
+    font-size: 16px;
+    color: #6b6b6b;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 32px 44px;
+    text-align: center;
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  .season-label {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #1a8917;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(44px, 8vw, 72px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: #242424;
+    margin-bottom: 16px;
+  }
+
+  .hero-sub {
+    font-size: 24px;
+    color: #6b6b6b;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .date-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    color: #6b6b6b;
+    border-top: 1px solid #e6e6e6;
+    padding-top: 22px;
+  }
+  .date-line strong { color: #242424; font-weight: 700; }
+
+  /* ── FILTER ── */
+  .filter-section {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 18px 32px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-section::-webkit-scrollbar { display: none; }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    max-width: 720px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: none;
+    border: 1px solid #e6e6e6;
+    color: #6b6b6b;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 17px;
+    font-family: 'Pretendard', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .filter-btn:hover { border-color: #242424; color: #242424; }
+  .filter-btn.active {
+    background: #242424;
+    border-color: #242424;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* ── LIST ── */
+  .list {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    padding: 36px 0;
+    border-bottom: 1px solid #e6e6e6;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0 28px;
+    transition: background 0.15s;
+  }
+
+  .card:nth-child(even) {
+    background: #fff;
+  }
+
+  .card.host {
+    background: #fdf8f0;
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .card.tinted {
+    background: #fdf8f0;
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .card-left {
+    padding-top: 4px;
+    text-align: center;
+  }
+
+  .member-emoji { font-size: 36px; display: block; margin-bottom: 6px; }
+
+  .member-num {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #1a8917;
+    text-transform: uppercase;
+    display: block;
+  }
+
+  .card-right {}
+
+  .member-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #242424;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .card.host .member-name::after { content: ' 👑'; font-size: 20px; }
+
+  .member-title {
+    font-size: 18px;
+    color: #6b6b6b;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .bullet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .bullet-list li {
+    font-size: 18px;
+    color: #3d3d3d;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .bullet-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #1a8917;
+    font-size: 13px;
+    top: 6px;
+  }
+  .bullet-list li b {
+    color: #242424;
+    font-weight: 700;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 15px;
+    color: #6b6b6b;
+    background: #f2f2f2;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: -0.01em;
+    transition: all 0.15s;
+  }
+  .card:hover .tag { background: #e6e6e6; color: #242424; }
+
+  .highlight-word {
+    display: inline-block;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a8917;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-left: 3px solid #1a8917;
+    padding-left: 10px;
+    margin-bottom: 14px;
+    line-height: 1;
+  }
+
+  .card.host .highlight-word {
+    color: #d4840a;
+    border-color: #d4840a;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid #e6e6e6;
+    padding: 28px 32px;
+    text-align: center;
+    font-size: 17px;
+    color: #9b9b9b;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .footer b { color: #1a8917; font-weight: 700; }
+
+  .card.hidden { display: none; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    .nav { padding: 12px 20px; }
+    .nav-logo { font-size: 22px; }
+    .nav-right { font-size: 13px; }
+
+    .hero { padding: 40px 20px 32px; }
+    .hero h1 { font-size: 38px; }
+    .hero-sub { font-size: 18px; }
+    .date-line { font-size: 15px; }
+
+    .filter-section { padding: 14px 20px; }
+    .filter-bar { flex-wrap: nowrap; }
+    .filter-btn { flex-shrink: 0; font-size: 15px; padding: 7px 14px; }
+
+    .list { padding: 0 20px 64px; }
+
+    .card {
+      grid-template-columns: 56px 1fr;
+      gap: 0 16px;
+      padding: 28px 0;
+    }
+    .card:nth-child(even) { background: #fff; }
+    .card.tinted, .card.host {
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .member-emoji { font-size: 28px; }
+    .member-name { font-size: 22px; }
+    .highlight-word { font-size: 11px; margin-bottom: 10px; }
+    .member-title { font-size: 15px; margin-bottom: 14px; }
+    .bullet-list li { font-size: 15px; }
+    .tag { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">☀️ <span>3M</span></div>
+  <div class="nav-right">Season 4 · 3월 28일 오전 8시</div>
+</nav>
+
+<div class="hero">
+  <div class="season-label">Morning Company · Season 4</div>
+  <h1>Vibe Morning!</h1>
+  <p class="hero-sub">아침이 바뀌면 인생이 바뀝니다</p>
+  <div class="date-line">📅 <strong>2025년 3월 28일 오전 8시</strong></div>
+</div>
+
+<div class="filter-section">
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">전체 보기</button>
+    <button class="filter-btn" data-filter="개발">개발 · IT</button>
+    <button class="filter-btn" data-filter="AI">AI</button>
+    <button class="filter-btn" data-filter="재테크">재테크</button>
+    <button class="filter-btn" data-filter="마케팅">마케팅</button>
+    <button class="filter-btn" data-filter="창업">창업</button>
+    <button class="filter-btn" data-filter="교육">교육</button>
+  </div>
+</div>
+
+<div class="list" id="list">
+
+  <div class="card host" data-tags="AI 창업 교육">
+    <div class="card-left">
+      <span class="member-emoji">☀️</span>
+      <span class="member-num">No.07</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미아빠</div>
+      <div class="highlight-word">Community Builder</div>
+      <div class="member-title">모닝컴퍼니 운영자</div>
+      <ul class="bullet-list">
+        <li><b>Morning · Money · Motivation</b> 커뮤니티 빌더</li>
+        <li>시즌4 기획 · 운영 총괄</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">커뮤니티</span>
+        <span class="tag">창업</span>
+        <span class="tag">AI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="마케팅 디자인">
+    <div class="card-left">
+      <span class="member-emoji">🌲</span>
+      <span class="member-num">No.44</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미44호</div>
+      <div class="highlight-word">Motion & Design</div>
+      <div class="member-title">산림 · 공공기관 홍보 · 영상 · 디자인</div>
+      <ul class="bullet-list">
+        <li><b>푸른산림</b> — 공공기관 대상 홍보·영상·디자인 전문</li>
+        <li>산림청, 임업진흥원 등 주요 고객사</li>
+        <li><b>모션코믹</b> 및 각종 디자인툴 전문가</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">홍보·영상</span>
+        <span class="tag">디자인</span>
+        <span class="tag">공공기관</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="마케팅 재테크 교육">
+    <div class="card-left">
+      <span class="member-emoji">🎨</span>
+      <span class="member-num">No.05</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미05호</div>
+      <div class="highlight-word">Art & Network</div>
+      <div class="member-title">이노비즈협회 회원 커뮤니케이션팀</div>
+      <ul class="bullet-list">
+        <li>예술 · 전시 분야 관심, 지인 작가 <b>전시회 기획</b> 참여</li>
+        <li>멘토링 활동 (위셋 등)</li>
+        <li>재테크 관심 — <b>달러 · 펀드</b>, 중장년 창업지원, 수출</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">커뮤니케이션</span>
+        <span class="tag">예술·전시</span>
+        <span class="tag">재테크</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="개발 창업 AI">
+    <div class="card-left">
+      <span class="member-emoji">🏙️</span>
+      <span class="member-num">No.62</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미62호</div>
+      <div class="highlight-word">Curious Creator</div>
+      <div class="member-title">도시계획 연구 · 초등 보조교사 · 디저트샵 · 스타트업 · IT 영업기획</div>
+      <ul class="bullet-list">
+        <li><b>사람을 이해하고, 새로운 일, 만드는 일이 좋은</b> 호기심 많은 사람</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">IT영업기획</span>
+        <span class="tag">스타트업</span>
+        <span class="tag">도시계획</span>
+        <span class="tag">호기심</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="개발 AI 창업">
+    <div class="card-left">
+      <span class="member-emoji">🤖</span>
+      <span class="member-num">No.24</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미24호</div>
+      <div class="highlight-word">AI Solutions CEO</div>
+      <div class="member-title">딥라이트 대표 · IT 맞춤형 솔루션</div>
+      <ul class="bullet-list">
+        <li><b>문서 자동화 · OCR · IoT</b> 연계 솔루션 개발</li>
+        <li>기업용 <b>AI 챗봇</b> 시장 진출 추진 중</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">AI</span>
+        <span class="tag">문서자동화</span>
+        <span class="tag">B2B SaaS</span>
+        <span class="tag">스타트업</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="개발 재테크">
+    <div class="card-left">
+      <span class="member-emoji">💻</span>
+      <span class="member-num">No.93</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미93호</div>
+      <div class="highlight-word">Developer & Investor</div>
+      <div class="member-title">개발자 · 93년생 신상 새댁</div>
+      <ul class="bullet-list">
+        <li>2026년 1월 결혼한 <b>따끈따끈한 새댁</b></li>
+        <li>등산 · <b>마라톤 10km</b> 도전러</li>
+        <li><b>부동산 투자</b>에 관심 많음</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">개발</span>
+        <span class="tag">부동산</span>
+        <span class="tag">마라톤</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="AI 교육 재테크">
+    <div class="card-left">
+      <span class="member-emoji">🎓</span>
+      <span class="member-num">No.42</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미42호</div>
+      <div class="highlight-word">AI Professor</div>
+      <div class="member-title">경복대 SW융합과 겸임교수 · AI 강의</div>
+      <ul class="bullet-list">
+        <li>능률협회 / 고대 세종캠퍼스 <b>AI·머신러닝</b> 강의</li>
+        <li>관심사 — <b>투자 · AI 트렌드</b> · 프리다이빙</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">AI·ML</span>
+        <span class="tag">교수</span>
+        <span class="tag">투자</span>
+        <span class="tag">프리다이빙</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="창업 교육">
+    <div class="card-left">
+      <span class="member-emoji">🌾</span>
+      <span class="member-num">No.87</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미87호</div>
+      <div class="highlight-word">2nd Life Planner</div>
+      <div class="member-title">고용노동부 재직 · 워라밸 · 2nd Life 고민러</div>
+      <ul class="bullet-list">
+        <li><b>자격증 콜렉터</b> — PCO 국제회의기획자 · 창업지도사 · 플로리스트</li>
+        <li>충북 음성 <b>논밭 보유</b> — "이 땅에 뭔가 해보실 분" 찾는 중</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">공무</span>
+        <span class="tag">창업지도</span>
+        <span class="tag">2nd Life</span>
+        <span class="tag">농업</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="마케팅 AI 재테크">
+    <div class="card-left">
+      <span class="member-emoji">📢</span>
+      <span class="member-num">No.25</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미25호</div>
+      <div class="highlight-word">Marketer & Builder</div>
+      <div class="member-title">가비아CNS 마케터 · 서비스기획 · 홍보</div>
+      <ul class="bullet-list">
+        <li>AI 시대에 뒤처지지 않고 <b>한 자리 해보기</b></li>
+        <li><b>부동산 · 재테크</b> 관심 — 인생 내 멋대로 살기 위한 토대 쌓기</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">마케팅</span>
+        <span class="tag">서비스기획</span>
+        <span class="tag">부동산</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="교육">
+    <div class="card-left">
+      <span class="member-emoji">📚</span>
+      <span class="member-num">No.08</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미8호</div>
+      <div class="highlight-word">Education Parent</div>
+      <div class="member-title">직장인 · 자녀 교육 전문 학부모</div>
+      <ul class="bullet-list">
+        <li><b>메디컬 지망</b> 고2 자녀 학부모</li>
+        <li>대입 전형 열심히 공부 중</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">직장인</span>
+        <span class="tag">교육</span>
+        <span class="tag">입시</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="교육 마케팅">
+    <div class="card-left">
+      <span class="member-emoji">✍️</span>
+      <span class="member-num">No.16</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미16호</div>
+      <div class="highlight-word">Author & Healer</div>
+      <div class="member-title">(전) 삼성화재 팀장 · 수필작가 · 강의</div>
+      <ul class="bullet-list">
+        <li><b>인문학 / 예술치유</b> 강의</li>
+        <li><b>수필작가</b> (문예지 등단)</li>
+        <li>에세이집 · 그림책 집필 중</li>
+        <li>관심사 — 교육 · 예술 · <b>힐링 콘텐츠</b> 저작</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">작가</span>
+        <span class="tag">인문학</span>
+        <span class="tag">예술치유</span>
+        <span class="tag">콘텐츠</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="마케팅 재테크">
+    <div class="card-left">
+      <span class="member-emoji">🚕</span>
+      <span class="member-num">No.49</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미49호</div>
+      <div class="highlight-word">Sales & Fun Life</div>
+      <div class="member-title">카카오모빌리티 광고사업팀 세일즈</div>
+      <ul class="bullet-list">
+        <li>재테크 공부 중 — <b>경매 · 코인</b></li>
+        <li><b>"재밌게 놀자!"</b> 가 인생 모토</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">광고·세일즈</span>
+        <span class="tag">재테크</span>
+        <span class="tag">코인</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-tags="개발 AI 창업 재테크">
+    <div class="card-left">
+      <span class="member-emoji">⚡</span>
+      <span class="member-num">No.37</span>
+    </div>
+    <div class="card-right">
+      <div class="member-name">꾸미37호</div>
+      <div class="highlight-word">Vibe Coder & PO</div>
+      <div class="member-title">핀다 · 혜움 · 비씨랩스 PO · AI 창업 지원</div>
+      <ul class="bullet-list">
+        <li>개인 · 사업자 <b>재무 · 금융 SaaS</b> 개발</li>
+        <li><b>비개발자도 AI로 웹서비스</b> 만들게 돕는 프로그램 운영</li>
+        <li>관심사 — <b>AI 활용창업 · 바이브코딩</b> · 협업 네트워크</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">바이브코딩</span>
+        <span class="tag">AI 창업</span>
+        <span class="tag">SaaS</span>
+        <span class="tag">핀테크</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding: 32px 24px 12px;">
+  <a href="https://invite.kakao.com/tc/j7X60Ua8u2" target="_blank" style="
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FEE500;
+    color: #3c1e1e;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: opacity 0.15s;
+  " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="8.5" rx="8" ry="7" fill="#3c1e1e"/><path d="M5 11c.5-1.5 2-4.5 4-4.5s3.5 3 4 4.5" stroke="#FEE500" stroke-width="1.3" stroke-linecap="round"/></svg>
+    모닝컴퍼니 톡방 입장하기
+  </a>
+</div>
+
+<div class="footer">
+  Morning Company · <b>Season 4</b> · Morning Money Motivation
+</div>
+
+<script>
+  // 랜덤 순서 — host 카드는 항상 맨 위 고정
+  const list = document.getElementById('list');
+  const host = list.querySelector('.card.host');
+  const others = Array.from(list.querySelectorAll('.card:not(.host)'));
+
+  // shuffle
+  for (let i = others.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [others[i], others[j]] = [others[j], others[i]];
+  }
+
+  // re-append: host first, then shuffled
+  list.innerHTML = '';
+  list.appendChild(host);
+  others.forEach(c => list.appendChild(c));
+
+  // 홀짝 색상 — 위치 기준으로 tinted 클래스 부여
+  const allCards = list.querySelectorAll('.card');
+  allCards.forEach((card, i) => {
+    card.classList.remove('tinted');
+    if (i % 2 === 0) card.classList.add('tinted'); // 0, 2, 4... → 색상
+  });
+
+  // 필터
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      const allCards = document.querySelectorAll('.card');
+      allCards.forEach(card => {
+        if (filter === 'all') card.classList.remove('hidden');
+        else card.classList.toggle('hidden', !(card.dataset.tags || '').includes(filter));
+      });
+      // 필터 후 보이는 카드 홀짝 재계산
+      const visible = Array.from(allCards).filter(c => !c.classList.contains('hidden'));
+      visible.forEach((card, i) => {
+        card.classList.remove('tinted');
+        if (i % 2 === 0) card.classList.add('tinted');
+      });
+    });
+  });
+</script>
+</body>
+</html>
